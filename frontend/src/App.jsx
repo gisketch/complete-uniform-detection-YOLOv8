@@ -83,25 +83,38 @@ function App() {
 
   return (
     <div className="App">
-      <img
-        className="Video"
-        src="http://localhost:5000/video_feed"
-        alt="Video"
-      />
-      <div>
-        Total objects: {totalObjects}
+      <div className="Header">
+        <h1 className="Header_Title">
+          Complete Uniform Detection System
+        </h1>
+        <h2 className="Header_Subtitle">
+          Joshua M. Tejedor
+        </h2>
       </div>
-      <div>
-        Detected objects: {objectsDetected ? objectsDetected.join(', ') : ""}
-      </div>
-      <div>
-        Gathering data: {gatheringData ? "Yes" : "No"}
-      </div>
-      <div>
-        Objects gathered: {objectsGathered ? objectsGathered.join(', ') : ""}
-      </div>
-      <div>
-        Complete: {completeMale ? "Male" : ""} {completeFemale ? "Female" : ""}
+      <div className="Video_Container">
+        <img
+          className="Video"
+          src="http://localhost:5000/video_feed"
+          alt="Video"
+        />
+        
+        <div className="Data_Container">
+          <div>
+            Total objects: {totalObjects}
+          </div>
+          <div>
+            Detected objects: {objectsDetected ? objectsDetected.join(', ') : ""}
+          </div>
+          <div>
+            Gathering data: {gatheringData ? "Yes" : "No"}
+          </div>
+          <div>
+            Objects gathered: {objectsGathered ? objectsGathered.join(', ') : ""}
+          </div>
+          <div>
+            Complete: {completeMale ? "Male" : ""} {completeFemale ? "Female" : ""}
+          </div>
+        </div>
       </div>
     </div>
   );
