@@ -1,16 +1,6 @@
-import { useState, useEffect } from 'react'
-import './App.css'
-import axios from 'axios'
-
-axios.defaults.baseURL = `http://localhost:5000`
+import './App.css';
 
 function App() {
-
-  useEffect(() => {
-    axios.get('/members').then((res) => {
-      console.log(res.data)
-    })
-  }, [])
 
   return (
     <div className="App">
@@ -20,7 +10,7 @@ function App() {
         alt="Video"
       />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
