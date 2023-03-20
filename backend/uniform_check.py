@@ -20,6 +20,8 @@ class UniformCheck(object):
         ret, frame = self.video.read()
         results = self.model(frame)
 
+        detected_objects = []  # List to store detected object names
+
         for result in results:
             boxes = result.boxes
             for box in boxes:
@@ -30,9 +32,20 @@ class UniformCheck(object):
                 cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color_tuple, thickness=2)
                 text = f'{self.classes[int(box.cls)]} {box.conf.item()*100:.2f}%'
                 cv2.putText(frame, text, (int(x1), int(y1)-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color_tuple, thickness=1)
-                        
+                # Add detected object name to list
+                object_name = self.classes[int(box.cls)]
+                if object_name not in detected_objects:
+                    detected_objects.append(object_name)
+
+        object_count = sum([len(result.boxes) for result in results])
+
+        detection_data = {
+            'total_objects': object_count,
+            'objects_detected': detected_objects,  
+        }
+        
         ret, jpeg = cv2.imencode('.jpg', frame)
-        return jpeg.tobytes()
+        return jpeg.tobytes(), detection_data
     
     # def get_model_data(self):
         
