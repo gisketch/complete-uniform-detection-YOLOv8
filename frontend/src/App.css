@@ -67,6 +67,10 @@ body {
   width: 15rem;
 }
 
+.Data_Container > * {
+  box-shadow: 0 0 3rem 0 rgba(0, 0, 0, 0.2);
+}
+
 .Total_Objects {
   border-radius: 1rem;
   display: flex;
