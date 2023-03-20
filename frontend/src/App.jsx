@@ -1,8 +1,19 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import io from 'socket.io-client';
+import { motion } from 'framer-motion';
+
+import { ReactSVG } from 'react-svg';
+import blouseIcon from './assets/blouse.svg';
+import idIcon from './assets/id.svg';
+import poloIcon from './assets/polo.svg';
+import shoesIcon from './assets/shoes.svg';
+import skirtIcon from './assets/skirt.svg';
+import slacksIcon from './assets/slacks.svg';
+import necktieIcon from './assets/necktie.svg';
 
 function App() {
+
   const [socket, setSocket] = useState(null);
   const [detectionData, setDetectionData] = useState({});
   const [totalObjects, setTotalObjects] = useState(0);
@@ -58,7 +69,7 @@ function App() {
   };
 
   //if objectsGathered contains (ID, Polo, Slacks, Shoes) completeMale is true
-  //if objectsGathered contains (ID, Blouse, Skirt, Shoes) completeFemale is true
+  //if objectsGathered contains (ID, Blouse, Skirt, Shoes, Necktie) completeFemale is true
   const handleCompleteMale = () => {
     if (objectsGathered.includes('ID') && objectsGathered.includes('polo') && objectsGathered.includes('slacks') && objectsGathered.includes('shoes')) {
       setCompleteMale(1);
@@ -66,7 +77,7 @@ function App() {
   };
 
   const handleCompleteFemale = () => {
-    if (objectsGathered.includes('ID') && objectsGathered.includes('blouse') && objectsGathered.includes('skirt') && objectsGathered.includes('shoes')) {
+    if (objectsGathered.includes('ID') && objectsGathered.includes('blouse') && objectsGathered.includes('skirt') && objectsGathered.includes('shoes') && objectsGathered.includes('necktie')) {
       setCompleteFemale(1);
     }
   };
@@ -79,7 +90,17 @@ function App() {
     handleCompleteFemale();
   }, [totalObjects, objectsDetected]);
 
+  const objectIcons = {
+    'ID': idIcon,
+    'necktie': necktieIcon,
+    'polo': poloIcon,
+    'blouse': blouseIcon,
+    'slacks': slacksIcon,
+    'skirt': skirtIcon,
+    'shoes': shoesIcon,
+  };
 
+  const iconArray = Object.entries(objectIcons);
 
   return (
     <div className="App">
@@ -92,20 +113,45 @@ function App() {
         </h2>
       </div>
       <div className="Video_Container">
-        <img
+        <motion.img
           className="Video"
+          animate={
+            {
+              borderColor: gatheringData ? "var(--green)" : "var(--grey)",
+            }
+          }
           src="http://localhost:5000/video_feed"
           alt="Video"
         />
-        
         <div className="Data_Container">
-          <div>
-            Total objects: {totalObjects}
+          <div className="Total_Objects">
+            <p className="Total_Objects_Text">
+              Total objects 
+            </p>
+            <p className="Total_Objects_Number">
+              {totalObjects}
+            </p>
           </div>
-          <div>
-            Detected objects: {objectsDetected ? objectsDetected.join(', ') : ""}
+          <div className="Detected_Objects">
+            <p className="Detected_Objects_Text">
+              Detected objects
+            </p>
+            <div className="Object_Icons">
+                {iconArray.map((object, index) => {
+                  return (
+                    <div className={`Object ${index === iconArray.length - 1 ? "Last-Item" : ""}`}>
+                      <motion.div className={`Object_Icon ${objectsGathered.indexOf(object[0]) === -1 ? "Inactive" : "Active"}`} key={index}>
+                        <ReactSVG src={object[1]} />
+                      </motion.div>
+                      <div className={`Object_Text ${objectsGathered.indexOf(object[0]) === -1 ? "Inactive" : "Active"}`}>
+                        {object[0].toUpperCase()}
+                      </div>
+                    </div>
+                  )}
+                )}
+            </div>
           </div>
-          <div>
+          {/* <div>
             Gathering data: {gatheringData ? "Yes" : "No"}
           </div>
           <div>
@@ -113,7 +159,7 @@ function App() {
           </div>
           <div>
             Complete: {completeMale ? "Male" : ""} {completeFemale ? "Female" : ""}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
