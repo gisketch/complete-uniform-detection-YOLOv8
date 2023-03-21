@@ -10,7 +10,7 @@ class UniformCheck(object):
         self.model = YOLO('./models/model_nano.pt')
         self.classes = ['shoes', 'polo', 'blouse', 'slacks', 'ID', 'necktie', 'skirt']
         self.colors = ['#57cfff','#60ff7a', '#f2ff4f' ,'#25a855', '#1787b4', '#98a500', '#e8d636']
-        self.video = cv2.VideoCapture(0)
+        self.video = cv2.VideoCapture(1)
 
     def __del__(self):
         self.video.release()
