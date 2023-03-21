@@ -25,9 +25,8 @@ function App() {
   const [database, setDatabase] = useState([]);
 
   const [objectsGathered, setObjectsGathered] = useState([]);
-
-  const [completeMale, setCompleteMale] = useState(0);
-  const [completeFemale, setCompleteFemale] = useState(0);
+  
+  const [selectedData, setSelectedData] = useState(null);
 
   const imgRef = useRef(null);
   
@@ -105,26 +104,58 @@ function App() {
       clearTimeout(timer);
     };
   }, [totalObjects, gatheringData]);
+
+  const determineGenderAndMissingItems = (objectsGathered) => {
+    const maleItems = ["slacks", "polo"];
+    const femaleItems = ["blouse", "skirt", "necktie"];
+    const universalItems = ["ID", "shoes"];
+
+    // Assign scores based on the detected items
+    const maleScore = maleItems.reduce((score, item) => score + (objectsGathered.includes(item) ? 1 : 0), 0);
+    const femaleScore = femaleItems.reduce((score, item) => score + (objectsGathered.includes(item) ? 1 : 0), 0);
+
+    let gender, missingItems;
+
+    // Select the gender with the highest score
+    if (maleScore > femaleScore) {
+      gender = "male";
+      missingItems = [...universalItems, ...maleItems].filter(item => !objectsGathered.includes(item));
+    } else if (femaleScore > maleScore) {
+      gender = "female";
+      missingItems = [...universalItems, ...femaleItems].filter(item => !objectsGathered.includes(item));
+    } else {
+      gender = "unknown";
+      missingItems = [];
+    }
+
+    return { gender, missingItems };
+  };
   
 
   useEffect(() => {
-    if (!gatheringData && objectsGathered.length > 0) {
-      console.log("Gathering complete");
-      setImageCaptured(false);
-      
-      if(objectsGathered.length > 1)
-      {
-        console.log("saving to database");
-        setDatabase([...database, {
-          image: screenshot,
-          objects: objectsGathered,
-          complete: checkItems(objectsGathered),
-        }])
-      }
 
-      setObjectsGathered([]);
+  if (!gatheringData && objectsGathered.length > 0) {
+    console.log("Gathering complete");
+    setImageCaptured(false);
+
+    if (objectsGathered.length > 1) {
+      console.log("saving to database");
+      const { gender, missingItems } = determineGenderAndMissingItems(objectsGathered);
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleString();
+      setDatabase([...database, {
+        image: screenshot,
+        objects: objectsGathered,
+        complete: checkItems(objectsGathered),
+        gender,
+        missingItems,
+        timestamp: formattedDate,
+      }]);
     }
-  }, [gatheringData]);
+
+    setObjectsGathered([]);
+  }
+}, [gatheringData]);
 
   const [imageCaptured, setImageCaptured] = useState(false);
 
@@ -190,14 +221,45 @@ function App() {
 
   const iconArray = Object.entries(objectIcons);
 
+  const handleDatabaseItemClick = (data) => {
+    setSelectedData(data);
+    console.log(data);
+  }
+
+  const clearSelectedData = () => {
+    setSelectedData(null);
+  }
+
   return (
     <div className="App">
+      {
+        selectedData && (
+        <motion.div
+          initial={{opacity: 0,}}
+          animate={{opacity: 1,}}
+          className="Data_Popup"
+          onClick={()=>{clearSelectedData()}}>
+          <img src={selectedData.image} alt="Selected Data" className="Data_Popup_Image" />
+          <div className="Data_Popup_Info">
+            <p className="Gender">{selectedData.gender.toUpperCase()}</p>
+            <p className="Complete" style={{color: selectedData.complete ? "var(--green)" : "var(--red)"}}>{selectedData.complete ? "Complete Uniform" : "Incomplete Uniform"}</p>
+            <p className="Missing">Missing Items: {selectedData.missingItems.join(', ')}</p>
+            <p className="Timestamp">{selectedData.timestamp}</p>
+          </div>
+        </motion.div>
+        )
+      }
+      {
+        selectedData && (
+          <div className="Black_Overlay" onClick={()=>{clearSelectedData()}}/>
+        )
+      }
       <div className="Header">
         <h1 className="Header_Title">
           Complete Uniform Detection System
         </h1>
         <h2 className="Header_Subtitle">
-          Joshua M. Tejedor
+          Joshua M. Tejedor - 4-BSEcE-A
         </h2>
       </div>
       <div className="Video_Container">
@@ -251,10 +313,13 @@ function App() {
               return (
                 <motion.div
                   initial={{scale: 0}}
-                  animate={{scale: 1}}
+                  animate={{scale: 0.9}}
+                  whileHover={{scale: 1}}
+                  whileTap={{scale:0.9}}
                   className={`Database_Item`}
                   key={index}
                   style={{borderColor: data.complete ? "var(--green)" : "var(--red)"}}
+                  onClick={() => handleDatabaseItemClick(data)}
                   >
                   <img className={`Database_Image`} src={data.image} alt="Database Image" />
                 </motion.div>

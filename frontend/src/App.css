@@ -42,7 +42,7 @@ body {
 .Header_Subtitle {
   margin-top: 0;
   font-size: 1rem;
-  color: var(--grey);
+  color: var(--green);
   font-weight: 400;
 }
 
@@ -172,14 +172,12 @@ body {
   width: 15rem;
   border-radius: 1rem;
   border: 3px solid;
-  z-index: 5;
 }
 
 .Database_Image {
   aspect-ratio: 16 / 9;
   width: 15rem;
   border-radius: 1rem;
-  z-index: 1;
 }
 
 .Database_Complete {
@@ -200,3 +198,74 @@ body {
   height: 35rem;
   overflow-y: scroll;
 }
+
+.Data_Popup {
+  z-index: 5;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 90%; /* Optional: prevent the popup from being too wide */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2.5rem;
+  overflow: hidden;
+  background-color: var(--bg);
+}
+
+.Data_Popup_Image {
+  aspect-ratio: 16 / 9;
+  height: 35rem;
+  border-radius: 2.5rem;
+}
+
+.Data_Popup_Info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 35rem;
+  width: 100%;
+  border-radius: 2.5rem;
+  color: var(--white);
+  position: absolute;
+  z-index: 7;
+  background: linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0));
+  padding-bottom: 2rem;
+}
+
+.Data_Popup_Info p {
+  margin-left: 2rem;
+  margin-top: 0rem;
+  line-height: 1rem;
+}
+
+.Gender {
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.Complete {
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.Missing {
+  font-weight: 500;
+  font-size: 1.75rem;
+}
+
+.Timestamp {
+
+}
+
+.Black_Overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 4;
+}
+
